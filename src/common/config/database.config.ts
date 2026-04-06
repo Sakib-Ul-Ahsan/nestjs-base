@@ -12,8 +12,10 @@ export const getDatabaseConfig = async (
     username: configService.get<string>('DB_USERNAME', 'postgres'),
     password: configService.get<string>('DB_PASSWORD', 'password'),
     database: configService.get<string>('DB_DATABASE', 'nestjs_base'),
-    entities: [User],
+    entities: [__dirname + '/../../modules/**/*.enity.{ts,js}'],
     synchronize: configService.get<string>('NODE_ENV') === 'development',
-    logging: configService.get<string>('NODE_ENV') === 'development',
+    // logging: configService.get<string>('NODE_ENV') === 'development',
+    // @TODO: change this
+    logging: false,
   };
 };
