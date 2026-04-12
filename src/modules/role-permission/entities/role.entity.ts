@@ -12,10 +12,10 @@ import { UserRoleEntity } from './user-role.entity';
 
 @Entity('roles')
 export class RoleEntity extends BaseEntity {
-  @Column({ unique: true })
+  @Column({ unique: true, name: 'name' })
   name: string; // e.g. "admin", "manager", "viewer"
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'description' })
   description: string;
 
   @OneToMany(() => RolePermissionEntity, (rp) => rp.role, { cascade: true })

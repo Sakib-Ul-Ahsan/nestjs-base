@@ -6,18 +6,19 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './service/auth.service';
 import { AuthController } from './controller/auth.controller';
+import { UsersModule } from '../users/users.module';
 
 @Global()
 @Module({
   imports: [
     ConfigModule, // 👈 ensure this is imported
+    UsersModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService): JwtModuleOptions => {
         const secret = config.get<string>('JWT_SECRET');
-        console.log('from auth.module.ts', secret);
 
         if (!secret) {
           throw new Error('JWT_SECRET is not defined');

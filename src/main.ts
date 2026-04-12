@@ -35,6 +35,9 @@ async function bootstrap() {
     },
   });
 
+  const { runSeeders } = await import('./database/seeders/index.js');
+  await runSeeders(app);
+
   await app.listen(port);
 
   const logger = new Logger('Bootstrap');

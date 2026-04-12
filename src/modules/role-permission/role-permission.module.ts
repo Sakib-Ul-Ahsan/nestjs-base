@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolePermissionController } from './controller/role-permission.controller';
 import { RolePermissionService } from './service/role-permission.service';
@@ -9,6 +9,7 @@ import { PermissionEntity } from './entities/permission.entity';
 import { RolePermissionEntity } from './entities/role-permission.entity';
 import { UserRoleEntity } from './entities/user-role.entity';
 
+@Global()
 @Module({
   imports: [
     AuthModule,

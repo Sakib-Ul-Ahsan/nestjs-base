@@ -1,6 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { ConfigService, ConfigModule } from '@nestjs/config';
-import { User } from '../../modules/users/entities/user.entity';
+import { ConfigService } from '@nestjs/config';
 
 export const getDatabaseConfig = async (
   configService: ConfigService,
@@ -17,5 +16,6 @@ export const getDatabaseConfig = async (
     // logging: configService.get<string>('NODE_ENV') === 'development',
     // @TODO: change this
     logging: false,
+    autoLoadEntities: true,
   };
 };

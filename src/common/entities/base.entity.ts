@@ -7,6 +7,7 @@ export abstract class BaseEntity {
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
+    name: 'created_at',
   })
   createdAt: Date;
 
@@ -14,12 +15,14 @@ export abstract class BaseEntity {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
+    name: 'updated_at',
   })
   updatedAt: Date;
 
   @DeleteDateColumn({
     type: 'timestamp',
     nullable: true,
+    name: 'deleted_at',
   })
   deletedAt?: Date;
 }
