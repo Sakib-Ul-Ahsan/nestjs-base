@@ -16,20 +16,23 @@ export class PermissionSeeder {
     const existing = await this.permissionRepo.find();
     const existingSet = new Set(existing.map((p) => p.action));
 
-    // 2️⃣ Filter out already existing permissions
-    const newPermissions = PERMISSIONS.filter(
-      (p) => !existingSet.has(p.action),
-    ).map((p) => {
-      const [resource] = p.action.split(':'); // e.g., 'users:read' -> 'users'
+    // 2️⃣ Convert object → array
+    const definitions = Object.values(PERMISSIONS);
 
-      return this.permissionRepo.create({
-        action: p.action,
-        resource,
-        description: p.description, // ✅ use description from constant
+    // 3️⃣ Filter + create
+    const newPermissions = definitions
+      .filter((p) => !existingSet.has(p.action))
+      .map((p) => {
+        const resource = p.action.split(':')[0];
+
+        return this.permissionRepo.create({
+          action: p.action,
+          resource,
+          description: p.description,
+        });
       });
-    });
 
-    // 3️⃣ Save new permissions
+    // 4️⃣ Save in bulk
     if (newPermissions.length) {
       await this.permissionRepo.save(newPermissions);
     }

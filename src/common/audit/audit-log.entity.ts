@@ -10,7 +10,7 @@ export class AuditLogEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'user_id', nullable: true })
   userId: string;
 
   @Column()
@@ -22,21 +22,21 @@ export class AuditLogEntity {
   @Column({ nullable: true })
   ip: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'request_body', type: 'jsonb', nullable: true })
   requestBody: any;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'response_body', type: 'jsonb', nullable: true })
   responseBody: any;
 
-  @Column()
+  @Column({ name: 'status_code' })
   statusCode: number;
 
-  @Column()
+  @Column({ name: 'duration_ms' })
   durationMs: number;
 
-  @Column({ nullable: true })
+  @Column({ name: 'user_agent', nullable: true })
   userAgent: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 }
