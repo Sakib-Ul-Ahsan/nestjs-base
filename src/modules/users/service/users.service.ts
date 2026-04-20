@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserEntity } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -26,6 +30,7 @@ export class UserService {
   ) {}
 
   async findByEmail(email: string) {
+    // @TODO: Add caching strategy to reduce database queries for frequently accessed users
     return this.userRepo.findOne({
       where: { email },
       select: {
@@ -86,6 +91,13 @@ export class UserService {
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
+    const existing = await this.userRepo.findOne({
+      where: { email: dto.email },
+    });
+    if (existing) {
+      throw new NotFoundException('Email already in use');
+    }
+
     const user = this.userRepo.create({
       email: dto.email,
       password: hashedPassword,
@@ -131,17 +143,38 @@ export class UserService {
   async updateUser(id: string, dto: UpdateUserDto, actor: any, req: any) {
     const user = await this.userRepo.findOne({ where: { id } });
 
-    if (!user) throw new NotFoundException();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
+    // 1️⃣ Email uniqueness check
+    if (dto.email && dto.email !== user.email) {
+      const existingUser = await this.userRepo.findOne({
+        where: { email: dto.email },
+      });
+
+      if (existingUser && existingUser.id !== user.id) {
+        throw new ConflictException('Email is already in use');
+      }
+    }
+
+    // 2️⃣ Store old values for audit log
     const oldValues = {
       email: user.email,
       name: user.name,
     };
 
+    // 3️⃣ Handle password hashing if password is being updated
+    if (dto.password) {
+      dto.password = await bcrypt.hash(dto.password, 10);
+    }
+
+    // 4️⃣ Apply updates
     Object.assign(user, dto);
 
     const updated = await this.userRepo.save(user);
 
+    // 5️⃣ System log
     this.systemLogService.log({
       action: SystemAction.USER_UPDATED,
       entityType: 'USER',
@@ -160,6 +193,8 @@ export class UserService {
   }
 
   async deleteUser(id: string, actor: any, req: any) {
+    // @TODO: Implement soft delete instead of hard delete for better data retention
+    // Consider using DeleteDateColumn from BaseEntity
     const user = await this.userRepo.findOne({ where: { id } });
 
     if (!user) throw new NotFoundException();

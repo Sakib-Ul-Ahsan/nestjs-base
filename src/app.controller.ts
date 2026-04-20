@@ -6,8 +6,13 @@ import { ResponseMessage } from './common/decorators/response-message.decorator'
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  // @TODO: This is a sample health check endpoint
+  // Replace or add additional endpoints based on your requirements
   @Get()
-  getHello(): string {
+  getHello(): any {
     return this.appService.getHello();
   }
+  
+  // @TODO: Consider adding a dedicated health check endpoint
+  // Example: GET /health for readiness/liveness probes
 }

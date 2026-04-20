@@ -33,6 +33,9 @@ export class RoleSeeder {
     }
 
     // 2️⃣ ADMIN USERS
+    // @TODO: Customize admin user details below with your own credentials
+    // Change names, emails, and passwords for production use
+    // Make sure to use strong passwords or generate them securely
     const admins = [
       { name: 'Sakib', email: 'admin1@mail.com', password: 'password123' },
       { name: 'Sakib', email: 'admin2@mail.com', password: 'password123' },

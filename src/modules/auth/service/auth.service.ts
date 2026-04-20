@@ -17,9 +17,7 @@ export class AuthService {
     try {
       return this.jwtService.verify<JwtPayload>(token);
     } catch {
-      //@TODO: Change later
-      
-      throw new UnauthorizedException('Token is invalid or expired, auth.service.ts');
+      throw new UnauthorizedException('Token is invalid or expired');
     }
   }
 }

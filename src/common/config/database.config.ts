@@ -11,10 +11,10 @@ export const getDatabaseConfig = async (
     username: configService.get<string>('DB_USERNAME', 'postgres'),
     password: configService.get<string>('DB_PASSWORD', 'password'),
     database: configService.get<string>('DB_DATABASE', 'nestjs_base'),
-    entities: [__dirname + '/../../modules/**/*.enity.{ts,js}'],
+    entities: [__dirname + '/../../modules/**/*.entity.{ts,js}'],
+    // @TODO: In production, set synchronize=false and use migrations instead
     synchronize: configService.get<string>('NODE_ENV') === 'development',
     // logging: configService.get<string>('NODE_ENV') === 'development',
-    // @TODO: change this
     logging: false,
     autoLoadEntities: true,
   };

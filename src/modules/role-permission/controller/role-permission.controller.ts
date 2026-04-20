@@ -39,6 +39,8 @@ import {
 export class RolePermissionController {
   constructor(private readonly service: RolePermissionService) {}
 
+  // @TODO: Update permission strings to use constants from PERMISSIONS object
+  // Current: 'roles:write' - should map to an entry in PERMISSIONS constant
   @Post('roles')
   @RequirePermissions('roles:write')
   @ApiOperation({ summary: 'Create a new role' })
@@ -74,6 +76,7 @@ export class RolePermissionController {
     return this.service.deleteRole(id, actor, req);
   }
 
+  // @TODO: Define permissions:write and permissions:read in PERMISSIONS constant
   @Post('permissions')
   @RequirePermissions('permissions:write')
   @ApiOperation({ summary: 'Create a new permission' })

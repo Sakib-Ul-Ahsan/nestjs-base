@@ -1,4 +1,4 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -22,11 +22,11 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
 
-  // Swagger setup
+  // @TODO: Update Swagger documentation with your project details
   const config = new DocumentBuilder()
-    .setTitle('My API')
-    .setDescription('API documentation')
-    .setVersion('1.0')
+    .setTitle('My API') // @TODO: Change this to your project name
+    .setDescription('API documentation') // @TODO: Update description
+    .setVersion('1.0') // @TODO: Update version as needed
     .addBearerAuth()
     .build();
 
