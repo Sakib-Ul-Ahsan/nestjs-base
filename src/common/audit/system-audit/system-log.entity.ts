@@ -14,22 +14,22 @@ export class SystemLogEntity {
   @Column({ type: 'enum', enum: SystemAction })
   action: SystemAction;
 
-  @Column()
+  @Column({ name: 'entity_type' })
   entityType: string; // USER, TASK, ORDER
 
-  @Column()
+  @Column({ name: 'entity_id' })
   entityId: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'user_id', nullable: true })
   userId: string; // actor (who performed action)
 
-  @Column({ nullable: true })
+  @Column({ name: 'target_user_id', nullable: true })
   targetUserId: string; // in case of user operations
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'old_values', type: 'jsonb', nullable: true })
   oldValues: any;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'new_values', type: 'jsonb', nullable: true })
   newValues: any;
 
   @Column({ type: 'jsonb', nullable: true })
@@ -38,6 +38,6 @@ export class SystemLogEntity {
   @Column({ nullable: true })
   ip: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 }

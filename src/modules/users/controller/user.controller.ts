@@ -6,14 +6,21 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto, UpdateUserDto } from '../dto/create-user.dto';
 import { UserService } from '../service/users.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from 'src/modules/auth/guards/permission.guard';
+import { FilterUserDto } from '../dto/filter-user.dto';
 
 @Controller('users')
 @ApiBearerAuth()
@@ -22,22 +29,30 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  getHello(): string {
-    return 'this.userService.getHello();';
+  findAll(@Query() query: FilterUserDto, @Req() req) {
+    return this.userService.findAllUsers(query, req.user, req);
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({ status: 201, description: 'User created successfully' })
   create(@Body() dto: CreateUserDto, @Req() req) {
     const actor = req.user;
     return this.userService.createUser(dto, actor, req);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() dto: any, @Req() req) {
+  @ApiOperation({ summary: 'Update a user' })
+  @ApiParam({ name: 'id', example: 'user-uuid' })
+  @ApiResponse({ status: 200, description: 'User updated successfully' })
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto, @Req() req) {
     return this.userService.updateUser(id, dto, req.user, req);
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a user' })
+  @ApiParam({ name: 'id', example: 'user-uuid' })
+  @ApiResponse({ status: 200, description: 'User deleted successfully' })
   remove(@Param('id') id: string, @Req() req) {
     return this.userService.deleteUser(id, req.user, req);
   }

@@ -5,9 +5,10 @@ import { Repository } from 'typeorm';
 import { RoleEntity } from 'src/modules/role-permission/entities/role.entity';
 import { UserRoleEntity } from 'src/modules/role-permission/entities/user-role.entity';
 import { SystemLogService } from 'src/common/audit/system-audit/system-log.service';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto, UpdateUserDto } from '../dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { SystemAction } from 'src/common/audit/system-audit/system-audit.enum';
+import { FilterUserDto } from '../dto/filter-user.dto';
 
 @Injectable()
 export class UserService {
@@ -26,6 +27,40 @@ export class UserService {
 
   async findByEmail(email: string) {
     return this.userRepo.findOne({ where: { email } });
+  }
+
+  async findAllUsers(query: FilterUserDto, actor: any, req: any) {
+    const { email, name, isActive, page = 1, limit = 10 } = query;
+
+    const qb = this.userRepo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.userRoles', 'userRoles')
+      .leftJoinAndSelect('userRoles.role', 'role');
+
+    if (email) {
+      qb.andWhere('user.email ILIKE :email', { email: `%${email}%` });
+    }
+
+    if (name) {
+      qb.andWhere('user.name ILIKE :name', { name: `%${name}%` });
+    }
+
+    if (isActive !== undefined) {
+      qb.andWhere('user.isActive = :isActive', { isActive });
+    }
+
+    qb.skip((page - 1) * limit).take(limit);
+
+    const [data, total] = await qb.getManyAndCount();
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+      },
+    };
   }
 
   async findById(id: string) {
@@ -52,13 +87,11 @@ export class UserService {
 
     const savedUser = await this.userRepo.save(user);
 
-    // assign role
     await this.userRoleRepo.save({
       userId: savedUser.id,
       roleId: role.id,
     });
 
-    // 🔥 SYSTEM LOG
     this.systemLogService.log({
       action: SystemAction.USER_CREATED,
       entityType: 'USER',
@@ -88,7 +121,7 @@ export class UserService {
     return savedUser;
   }
 
-  async updateUser(id: string, dto: any, actor: any, req: any) {
+  async updateUser(id: string, dto: UpdateUserDto, actor: any, req: any) {
     const user = await this.userRepo.findOne({ where: { id } });
 
     if (!user) throw new NotFoundException();
