@@ -18,7 +18,6 @@ export class AuthService {
       return this.jwtService.verify<JwtPayload>(token);
     } catch {
       //@TODO: Change later
-      console.log("From auth service");
       
       throw new UnauthorizedException('Token is invalid or expired, auth.service.ts');
     }

@@ -13,6 +13,7 @@ import { UserRoleEntity } from './modules/role-permission/entities/user-role.ent
 import { PermissionsGuard } from './modules/auth/guards/permission.guard';
 import { PermissionSeeder } from './database/seeders/permission.seeder';
 import { RoleSeeder } from './database/seeders/role.seeder';
+import { AuditLogModule } from './common/audit/audit-log.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RoleSeeder } from './database/seeders/role.seeder';
     UsersModule,
     AuthModule,
     RolePermissionModule,
+    AuditLogModule,
   ],
   controllers: [AppController],
   providers: [

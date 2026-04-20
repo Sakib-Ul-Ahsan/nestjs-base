@@ -34,6 +34,6 @@ export class PermissionSeeder {
       await this.permissionRepo.save(newPermissions);
     }
 
-    console.log('✅ Permissions seeded with descriptions');
+    console.log('✅ Permissions seeded');
   }
 }

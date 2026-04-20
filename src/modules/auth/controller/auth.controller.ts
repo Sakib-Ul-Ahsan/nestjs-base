@@ -46,14 +46,13 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@Req() req) {
-    const userId = req.user.id; // user info comes from JwtAuthGuard
+    const userId = req.user?.id;
     const user = await this.userService.findById(userId);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new UnauthorizedException('User not found');
     }
 
-    // Remove sensitive info like password before returning
     const { password, ...userSafe } = user;
     return userSafe;
   }
