@@ -1,22 +1,20 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsBoolean } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsOptional, IsString } from 'class-validator';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
-export class FilterUserDto extends PaginationQueryDto {
+export class FilterPermissionDto extends PaginationQueryDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  email?: string;
+  action?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  name?: string;
+  resource?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @Type(() => Boolean)
-  @IsBoolean()
-  isActive?: boolean;
+  @IsString()
+  description?: string;
 }

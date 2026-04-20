@@ -21,6 +21,8 @@ import {
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from 'src/modules/auth/guards/permission.guard';
 import { FilterUserDto } from '../dto/filter-user.dto';
+import { RequirePermissions } from 'src/modules/auth/decorators/permission.decorator';
+import { PERMISSIONS } from 'src/common/constants/permission.constant';
 
 @Controller('users')
 @ApiBearerAuth()
@@ -28,29 +30,37 @@ import { FilterUserDto } from '../dto/filter-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // 👇 READ USERS
   @Get()
+  @RequirePermissions(PERMISSIONS.USERS_READ.action)
+  @ApiOperation({ summary: PERMISSIONS.USERS_READ.description })
   findAll(@Query() query: FilterUserDto, @Req() req) {
     return this.userService.findAllUsers(query, req.user, req);
   }
 
+  // 👇 CREATE USER
   @Post()
-  @ApiOperation({ summary: 'Create a new user' })
+  @RequirePermissions(PERMISSIONS.USERS_CREATE.action)
+  @ApiOperation({ summary: PERMISSIONS.USERS_CREATE.description })
   @ApiResponse({ status: 201, description: 'User created successfully' })
   create(@Body() dto: CreateUserDto, @Req() req) {
-    const actor = req.user;
-    return this.userService.createUser(dto, actor, req);
+    return this.userService.createUser(dto, req.user, req);
   }
 
+  // 👇 UPDATE USER
   @Put(':id')
-  @ApiOperation({ summary: 'Update a user' })
+  @RequirePermissions(PERMISSIONS.USERS_UPDATE.action)
+  @ApiOperation({ summary: PERMISSIONS.USERS_UPDATE.description })
   @ApiParam({ name: 'id', example: 'user-uuid' })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
   update(@Param('id') id: string, @Body() dto: UpdateUserDto, @Req() req) {
     return this.userService.updateUser(id, dto, req.user, req);
   }
 
+  // 👇 DELETE USER
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete a user' })
+  @RequirePermissions(PERMISSIONS.USERS_DELETE.action)
+  @ApiOperation({ summary: PERMISSIONS.USERS_DELETE.description })
   @ApiParam({ name: 'id', example: 'user-uuid' })
   @ApiResponse({ status: 200, description: 'User deleted successfully' })
   remove(@Param('id') id: string, @Req() req) {

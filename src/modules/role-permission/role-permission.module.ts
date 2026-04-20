@@ -8,11 +8,13 @@ import { RoleEntity } from './entities/role.entity';
 import { PermissionEntity } from './entities/permission.entity';
 import { RolePermissionEntity } from './entities/role-permission.entity';
 import { UserRoleEntity } from './entities/user-role.entity';
+import { AuditLogModule } from 'src/common/audit/audit-log.module';
 
 @Global()
 @Module({
   imports: [
     AuthModule,
+    AuditLogModule,
     TypeOrmModule.forFeature([
       RoleEntity,
       PermissionEntity,

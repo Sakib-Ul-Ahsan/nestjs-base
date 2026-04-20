@@ -26,7 +26,14 @@ export class UserService {
   ) {}
 
   async findByEmail(email: string) {
-    return this.userRepo.findOne({ where: { email } });
+    return this.userRepo.findOne({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        password: true, // 👈 override select:false
+      },
+    });
   }
 
   async findAllUsers(query: FilterUserDto, actor: any, req: any) {
