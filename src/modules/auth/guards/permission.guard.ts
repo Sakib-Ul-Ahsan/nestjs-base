@@ -43,6 +43,10 @@ export class PermissionsGuard implements CanActivate {
       ],
     });
 
+    const isSuperAdmin = userRoles.some((r) => r.role?.name === 'SUPER_ADMIN');
+
+    if (isSuperAdmin) return true;
+
     // Flatten all permission actions the user has
     const userPermissions = new Set<string>();
     for (const userRole of userRoles) {

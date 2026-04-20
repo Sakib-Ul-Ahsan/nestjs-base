@@ -12,14 +12,14 @@ import { RolePermissionEntity } from './role-permission.entity';
 @Entity('permissions')
 export class PermissionEntity extends BaseEntity {
   // e.g. "users:read", "users:write", "orders:delete"
-  @Column({ unique: true })
+  @Column({ unique: true, name: 'action' })
   action: string;
 
   // e.g. "users", "orders", "reports"
-  @Column()
+  @Column({ name: 'resource' })
   resource: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'description' })
   description: string;
 
   @OneToMany(() => RolePermissionEntity, (rp) => rp.permission)

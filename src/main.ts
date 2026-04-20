@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ResponseInterceptor } from './common/interfaces/response.interface';
+import { AuditLogService } from './common/audit/audit-log.service';
+import { AuditLogInterceptor } from './common/audit/audit-log.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -34,6 +36,13 @@ async function bootstrap() {
       persistAuthorization: true,
     },
   });
+
+  // const { runSeeders } = await import('./database/seeders/index.js');
+  // await runSeeders(app);
+
+  const auditService = app.get(AuditLogService);
+
+  app.useGlobalInterceptors(new AuditLogInterceptor(auditService));
 
   await app.listen(port);
 
